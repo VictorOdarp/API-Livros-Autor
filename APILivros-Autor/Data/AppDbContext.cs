@@ -9,8 +9,8 @@ namespace APILivros_Autor.Data
         {
         }
 
-        DbSet<LivroModel> LivroModels { get; set; }
-        DbSet<AutorModel> AutorModels { get; set; }
+        DbSet<LivroModel> Livros { get; set; }
+        DbSet<AutorModel> Autores { get; set; }
      
     }
 }
