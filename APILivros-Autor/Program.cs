@@ -1,4 +1,5 @@
 using APILivros_Autor.Data;
+using APILivros_Autor.Services.AutorService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IAutorInterface, AutorService>();
 
 var DefaultConnection = "server=localhost;userid=root;password=895smigol;database=LivroAutor;";
 
