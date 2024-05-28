@@ -20,22 +20,26 @@ namespace APILivros_Autor.Services.AutorService
 
             try
             {
-                if(responseModel.Dados == null)
+               if (_context.Autores.Count() == 0)
                 {
                     responseModel.Dados = null;
                     responseModel.Messagem = "Nenhum dado encontrado!";
                     responseModel.Status = false;
+                    return responseModel;
                 }
 
                 responseModel.Dados = await _context.Autores.ToListAsync();
+                responseModel.Messagem = "Todos os autores foram coletados!";
+
+                return responseModel;
             }
             catch (Exception ex)
             {
                 responseModel.Messagem = ex.Message;
                 responseModel.Status = false;
+                return responseModel;
             }
 
-            return responseModel;
         }
 
         public async Task<ResponseModel<AutorModel>> BuscarAutorPorId(int idAutor)

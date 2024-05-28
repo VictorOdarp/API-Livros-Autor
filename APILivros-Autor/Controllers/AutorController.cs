@@ -25,14 +25,14 @@ namespace APILivros_Autor.Controllers
         }
 
         [HttpGet("BuscarPorAutorId/{idAutor}")]
-        public async Task<ActionResult<ResponseModel<List<AutorModel>>>> BuscarAutorPorId(int idAutor)
+        public async Task<ActionResult<ResponseModel<AutorModel>>> BuscarAutorPorId(int idAutor)
         {
             var autor = await _autorInterface.BuscarAutorPorId(idAutor);
             return Ok(autor);
         }
 
         [HttpGet("BuscarPorLivroId/{idLivro}")]
-        public async Task<ActionResult<ResponseModel<List<AutorModel>>>> BuscarAutorPorLivroId(int idLivro)
+        public async Task<ActionResult<ResponseModel<AutorModel>>> BuscarAutorPorLivroId(int idLivro)
         {
             var autorLivro = await _autorInterface.ListarAutorPorIdLivro(idLivro);
             return Ok(autorLivro);
@@ -46,14 +46,14 @@ namespace APILivros_Autor.Controllers
         }
 
         [HttpPut("EditarAutor")]
-        public async Task<ActionResult<ResponseModel<AutorModel>>> EditarAutor(AutorEdicaoDto autorEdicao)
+        public async Task<ActionResult<ResponseModel<List<AutorModel>>>> EditarAutor(AutorEdicaoDto autorEdicao)
         {
             var autores = await _autorInterface.EditarAutor(autorEdicao);
             return Ok(autores);
         }
 
         [HttpDelete("DeletarAutor")]
-        public async Task<ActionResult<ResponseModel<AutorModel>>> DeletarAutor(int idAutor)
+        public async Task<ActionResult<ResponseModel<List<AutorModel>>>> DeletarAutor(int idAutor)
         {
             var autor = await _autorInterface.DeletarAutor(idAutor);
             return Ok(autor);

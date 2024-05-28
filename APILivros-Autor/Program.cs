@@ -1,5 +1,6 @@
 using APILivros_Autor.Data;
 using APILivros_Autor.Services.AutorService;
+using APILivros_Autor.Services.LivroService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAutorInterface, AutorService>();
+builder.Services.AddScoped<ILivroInterface, LivroService>();
 
 var DefaultConnection = "server=localhost;userid=root;password=895smigol;database=LivroAutor;";
 
