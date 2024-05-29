@@ -30,7 +30,7 @@ namespace APILivros_Autor.Services.LivroService
                     return responseModel;
                 }
 
-                responseModel.Dados = await _context.Livros.ToListAsync();
+                responseModel.Dados = await _context.Livros.Include(a => a.Autor).ToListAsync();
                 responseModel.Messagem = "Os Livros acima foram coletados";
                 
                 return responseModel;
@@ -57,9 +57,9 @@ namespace APILivros_Autor.Services.LivroService
                     return responseModel;
                 }
 
-                AutorModel autor = await _context.Autores.Include(Livro => Livro.Livro).FirstOrDefaultAsync(bancoAutores => bancoAutores.Id == idAutor);
+                var livro = await _context.Livros.Include(autor => autor.Autor).Where(bancoLivro => bancoLivro.Autor.Id == idAutor).ToListAsync();
 
-                if(autor == null)
+                if(livro == null)
                 {
                     responseModel.Dados = null;
                     responseModel.Messagem = "Nenhum dado encontrado!";
@@ -67,7 +67,7 @@ namespace APILivros_Autor.Services.LivroService
                     return responseModel;
                 }
 
-                responseModel.Dados = autor.Livro.ToList();
+                responseModel.Dados = livro;
                 responseModel.Messagem = "Livros coletados pelo Autor";
                 return responseModel;
 
@@ -94,7 +94,7 @@ namespace APILivros_Autor.Services.LivroService
                     return responseModel;
                 }
 
-                LivroModel livro = await _context.Livros.FirstOrDefaultAsync(bancoLivro => bancoLivro.Id == idLivro);
+                LivroModel livro = await _context.Livros.Include(a => a.Autor).FirstOrDefaultAsync(bancoLivro => bancoLivro.Id == idLivro);
 
                 if (livro == null)
                 {
@@ -131,16 +131,25 @@ namespace APILivros_Autor.Services.LivroService
                     return responseModel;
                 }
 
+                AutorModel autorid = await _context.Autores.FirstOrDefaultAsync(bancoAutores => bancoAutores.Id == novoLivroDto.Autor.Id);
+
+                if (autorid == null)
+                {
+                    responseModel.Dados = null;
+                    responseModel.Messagem = "Nenhum registro de autor localizado!";
+                }
+
                 LivroModel livro = new LivroModel()
                 {
                     Title = novoLivroDto.Title,
-                    Autor = novoLivroDto.Autor,
+                    Autor = autorid,
+
                 };
 
                 _context.Add(livro);
                 await _context.SaveChangesAsync();
 
-                responseModel.Dados = await _context.Livros.ToListAsync();
+                responseModel.Dados = await _context.Livros.Include(a => a.Autor).ToListAsync(); 
                 return responseModel;
             }
             catch (Exception ex)
@@ -165,9 +174,19 @@ namespace APILivros_Autor.Services.LivroService
                     return responseModel;
                 }
 
-                LivroModel livro = await _context.Livros.FirstOrDefaultAsync(bancoLivro => bancoLivro.Id == editadoLivro.Id);
+                LivroModel livro = await _context.Livros.Include(a => a.Autor).FirstOrDefaultAsync(bancoLivro => bancoLivro.Id == editadoLivro.Id);
+
+                AutorModel autor = await _context.Autores.FirstOrDefaultAsync(bancoAutor => bancoAutor.Id == editadoLivro.Autor.Id);
 
                 if (livro == null)
+                {
+                    responseModel.Dados = null;
+                    responseModel.Messagem = "Livro não encontrado!";
+                    responseModel.Status = false;
+                    return responseModel;
+                }
+
+                if (autor == null)
                 {
                     responseModel.Dados = null;
                     responseModel.Messagem = "Autor não encontrado!";
@@ -176,12 +195,12 @@ namespace APILivros_Autor.Services.LivroService
                 }
 
                 livro.Title = editadoLivro.Title;
-                livro.Autor = editadoLivro.Autor;
+                livro.Autor = autor;
 
                 _context.Update(livro);
                 await _context.SaveChangesAsync();
 
-                responseModel.Dados = await _context.Livros.ToListAsync();
+                responseModel.Dados = await _context.Livros.Include(a => a.Autor).ToListAsync();
                 responseModel.Messagem = "Livro editado com sucesso!";
 
                 return responseModel;
